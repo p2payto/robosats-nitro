@@ -1,0 +1,29 @@
+{
+  "name": "@p2payto/robosats-nitro",
+  "version": "0.0.1",
+  "author": "Learntheropes",
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "runtime",
+    "module",
+    "nitro.config.*",
+    "routes",
+    "server",
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./module/module.js"
+    }
+  },
+  "scripts": {
+    "gen:routes": "node scripts/generate-routes.mjs",
+    "dev": "npm run gen:routes && nitro dev",
+    "build": "npm run gen:routes && NITRO_PRESET=cloudflare_module nitro build",
+    "start": "node .output/server/index.mjs"
+  },
+  "dependencies": {
+    "nitropack": "latest"
+  }
+}
