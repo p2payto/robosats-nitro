@@ -4,6 +4,7 @@
   "author": "Learntheropes",
   "license": "MIT",
   "type": "module",
+  "private": true,
   "files": [
     "runtime",
     "module",
@@ -24,6 +25,8 @@
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
-    "nitropack": "latest"
+    "got": "^13.0.0",
+    "nitropack": "^2.9.0",
+    "socks-proxy-agent": "^7.0.0"
   }
 }

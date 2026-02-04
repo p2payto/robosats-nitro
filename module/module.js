@@ -11,15 +11,14 @@ export default defineNuxtModule({
     prefix: '/api/robosats'
   },
 
-  setup(options) {
-    nuxt.options.runtimeConfig.public.somePublicValue = nuxt.options.runtimeConfig.public.somePublicValue ?? 'default public value'
+  setup(options, nuxt) {
+    nuxt.options.runtimeConfig.public.robosatsCoordinatorUrl = nuxt.options.runtimeConfig.public.robosatsCoordinatorUrl ?? 'http://otmoonrndnrddqdlhu6b36heunmbyw3cgvadqo2oqeau3656wfv7fwad.onion'
+    nuxt.options.runtimeConfig.public.torSocksUrl = nuxt.options.runtimeConfig.public.torSocksUrl ?? 'socks5h://127.0.0.1:9050'
 
     const resolver = createResolver(import.meta.url)
 
-    // normalizza prefix
     const prefix = (options.prefix || '/api/robosats').replace(/\/+$/, '')
 
-    // de-dupe + safety
     const seen = new Set()
 
     for (const ep of endpoints) {

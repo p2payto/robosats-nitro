@@ -1,8 +1,8 @@
 export const endpoints = [
-  // route è RELATIVA al prefix, senza / iniziale
-  // file è RELATIVO a runtime/handlers
-  { method: 'get', route: 'test', file: 'test.get.js' },
-
-  // esempi:
-  // { method: 'post', route: 'offer', file: 'robosats/offer.post.js' },
+  // without initial /
+  // relative path to runtime/handlers
+  { method: 'get', route: 'limits', file: 'limits.get.js' },
+  { method: 'post', route: 'offer', file: 'offer.post.js' },
+  { method: 'get', route: 'order', file: 'order.get.js' },
+  { method: 'post', route: 'robot', file: 'robot.post.js' },
 ]

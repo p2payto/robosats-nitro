@@ -1,8 +1,8 @@
 export default defineNitroConfig({
   runtimeConfig: {
-    somePrivateValue: process.env.NUXT_SOME_PRIVATE_VALUE,
     public: {
-      somePublicValue: process.env.NUXT_SOME_PUBLIC_VALUE
+      robosatsCoordinatorUrl: process.env.NUXT_ROBOSATS_COORDINATOR_URL,
+      torSocksUrl: process.env.NUXT_TOR_SOCKS_URL
     }
   },
 });
