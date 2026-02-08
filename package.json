@@ -1,7 +1,7 @@
 {
   "name": "@p2payto/robosats-nitro",
   "version": "0.0.1",
-  "author": "Learntheropes",
+  "author": "Learntheropes <giovanni@learntheropes.xyz>",
   "license": "MIT",
   "type": "module",
   "private": true,
