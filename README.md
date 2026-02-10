@@ -129,3 +129,29 @@ This automation is not available without a BTCPay Server + LN node.
 - API surface: **subject to refinement**
 
 This module is intentionally low-level and infrastructure-oriented.
+
+## Configuration
+
+### Standalone
+
+Set environment variables as explained in the `.env.standalone` file.
+
+### Module
+
+nuxt.config.js
+```js
+export default defineNuxtConfig({
+  modules: [
+    'robosats-nitro',
+  ],
+
+  robosatsNitro: {
+    enabled: true,
+    torSocksUrl: process.env.NUXT_TOR_SOCKS_URL, // Optional. Defaults to 'socks5h://127.0.0.1:9050'
+    robosatsCoordinatorUrl: process.env.NUXT_ROBOSATS_COORDINATOR_URL
+  }
+})
+```
+Set environment variables as explained in the `.env.module` file.
+
+

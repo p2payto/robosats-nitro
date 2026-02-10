@@ -1,6 +1,11 @@
 import { defineNuxtModule, addServerHandler, createResolver } from '@nuxt/kit'
 import { endpoints } from './endpoints.js'
 
+function toBool(v) {
+  if (typeof v === 'boolean') return v
+  return String(v || '').toLowerCase() === 'true'
+}
+
 export default defineNuxtModule({
   meta: {
     name: 'robosats-nitro',
@@ -8,39 +13,59 @@ export default defineNuxtModule({
   },
 
   defaults: {
-    prefix: '/api/robosats'
+    enabled: false,
+    prefix: '/api/robosats',
+
+    // Optional overrides (can be set by host app)
+    torSocksUrl: undefined,
+    robosatsCoordinatorUrl: undefined
   },
 
   setup(options, nuxt) {
-    nuxt.options.runtimeConfig.public.robosatsCoordinatorUrl = nuxt.options.runtimeConfig.public.robosatsCoordinatorUrl ?? 'http://otmoonrndnrddqdlhu6b36heunmbyw3cgvadqo2oqeau3656wfv7fwad.onion'
-    nuxt.options.runtimeConfig.public.torSocksUrl = nuxt.options.runtimeConfig.public.torSocksUrl ?? 'socks5h://127.0.0.1:9050'
+    const enabled = toBool(options.enabled)
+    if (!enabled) return
+
+    // Map module options -> runtimeConfig (server-only)
+    // Keep it non-public and override only if provided
+    if (options.torSocksUrl !== undefined) {
+      nuxt.options.runtimeConfig.torSocksUrl = options.torSocksUrl
+    }
+    if (options.robosatsCoordinatorUrl !== undefined) {
+      nuxt.options.runtimeConfig.robosatsCoordinatorUrl = options.robosatsCoordinatorUrl
+    }
+
+    // Defaults (only if still missing)
+    nuxt.options.runtimeConfig.torSocksUrl =
+      nuxt.options.runtimeConfig.torSocksUrl ?? 'socks5h://127.0.0.1:9050'
+
+    nuxt.options.runtimeConfig.robosatsCoordinatorUrl =
+      nuxt.options.runtimeConfig.robosatsCoordinatorUrl ??
+      'http://otmoonrndnrddqdlhu6b36heunmbyw3cgvadqo2oqeau3656wfv7fwad.onion'
 
     const resolver = createResolver(import.meta.url)
-
-    const prefix = (options.prefix || '/api/robosats').replace(/\/+$/, '')
+    const prefix = String(options.prefix || '/api/robosats').replace(/\/+$/, '')
 
     const seen = new Set()
 
     for (const ep of endpoints) {
-      if (!ep?.method || !ep?.route || !ep?.file) {
-        throw new Error(`[robosats-nitro] Invalid endpoint entry: ${JSON.stringify(ep)}`)
-      }
+      const method = String(ep.method).toUpperCase()
 
-      const method = String(ep.method).toLowerCase()
       const routeRel = String(ep.route).replace(/^\/+/, '').replace(/\/+$/, '')
-      const route = `${prefix}/${routeRel}`
+      const route = routeRel ? `${prefix}/${routeRel}` : `${prefix}`
 
       const key = `${method} ${route}`
-      if (seen.has(key)) {
-        throw new Error(`[robosats-nitro] Duplicate endpoint: ${key}`)
-      }
+      if (seen.has(key)) throw new Error(`[tor-proxy-nitro] Duplicate endpoint: ${key}`)
       seen.add(key)
 
-      addServerHandler({
-        method,
+      const def = {
         route,
         handler: resolver.resolve(`../runtime/handlers/${ep.file}`)
-      })
+      }
+
+      // "ALL" = no method constraint
+      if (method !== 'ALL') def.method = method
+
+      addServerHandler(def)
     }
   }
 })

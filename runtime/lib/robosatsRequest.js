@@ -3,7 +3,7 @@ import { SocksProxyAgent } from 'socks-proxy-agent'
 
 export const robosatsRequest = async ({ authorization, method = "GET", path, body, query }) => {
 
-  const { public: { robosatsCoordinatorUrl, torSocksUrl } } = useRuntimeConfig()
+  const { robosatsCoordinatorUrl, torSocksUrl } = useRuntimeConfig()
   const url = `${robosatsCoordinatorUrl}${path}`
 
   const headers = {
